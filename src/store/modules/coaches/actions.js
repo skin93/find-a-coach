@@ -14,7 +14,7 @@ export default {
       {
         method: "PUT",
         body: JSON.stringify(coachData),
-      },
+      }
     );
 
     //  const data = await res.json();
@@ -27,5 +27,31 @@ export default {
       ...coachData,
       id: userId,
     });
+  },
+  async loadCoaches(context) {
+    const res = await fetch(
+      `https://find-a-coach-a9143.firebaseio.com/coaches.json`
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      // error
+    }
+
+    const coaches = [];
+
+    for (const key in data) {
+      const coach = {
+        id: key,
+        firstName: data[key].firstName,
+        lastName: data[key].lastName,
+        description: data[key].description,
+        hourlyRate: data[key].hourlyRate,
+        areas: data[key].areas,
+      };
+      coaches.push(coach);
+    }
+    context.commit("setCoaches", coaches);
   },
 };
