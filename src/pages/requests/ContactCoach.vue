@@ -51,7 +51,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.form {
+form {
   margin: 1rem;
   border: 1px solid #ccc;
   border-radius: 12px;
