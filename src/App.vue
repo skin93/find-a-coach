@@ -18,7 +18,7 @@ export default {
   },
   computed: {
     didAutoLoogut() {
-      return this.store.getters.didAutoLoogut;
+      return this.$store.getters.didAutoLoogut;
     },
   },
   watch: {
