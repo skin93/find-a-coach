@@ -5,8 +5,9 @@ import getters from "./getters";
 export default {
   state() {
     return {
-      userIsCoach: false,
-      userId: "c3",
+      userId: null,
+      token: null,
+      tokenExpiration: null,
     };
   },
   mutations,
