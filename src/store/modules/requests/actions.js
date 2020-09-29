@@ -27,8 +27,10 @@ export default {
 
   async fetchRequests(context) {
     const coachId = context.rootGetters.userId;
+    const token = context.rootGetters.token;
     const res = await fetch(
-      `https://find-a-coach-a9143.firebaseio.com/requests/${coachId}.json`
+      `https://find-a-coach-a9143.firebaseio.com/requests/${coachId}.json?auth=` +
+        token
     );
 
     const data = await res.json();

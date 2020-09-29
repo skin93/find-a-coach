@@ -8,8 +8,8 @@ export default createStore({
   mutations: {},
   actions: {},
   modules: {
+    auth: authModule,
     coaches: coachesModule,
     requests: requestsModule,
-    auth: authModule,
   },
 });
