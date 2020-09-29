@@ -16,7 +16,9 @@ export default {
     const data = await res.json();
 
     if (!res.ok) {
-      const error = new Error(data.message || "Failed to authenticate");
+      const error = new Error(
+        data.message || "Failed to authenticate. Check your login data."
+      );
       throw error;
     }
 
