@@ -11,7 +11,7 @@ import NotFound from "../pages/NotFound.vue";
 import store from "../store/index";
 
 const CoachDetail = defineAsyncComponent(() =>
-  import("../pages/coaches/CoachesList.vue")
+  import("../pages/coaches/CoachDetail.vue")
 );
 const CoachRegistration = defineAsyncComponent(() =>
   import("../pages/coaches/CoachRegistration.vue")
