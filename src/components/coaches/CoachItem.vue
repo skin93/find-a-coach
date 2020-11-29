@@ -20,20 +20,26 @@
 </template>
 
 <script>
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 export default {
-  props: ["id", "firstName", "lastName", "rate", "areas"],
-  computed: {
-    fullName() {
-      return this.firstName + " " + this.lastName;
-    },
-    coachContactLink() {
-      return this.$route.path + "/" + this.id + "/contact";
-    },
-    coachDetailsLink() {
-      return this.$route.path + "/" + this.id;
-    },
-  },
-};
+  props: ['id', 'firstName', 'lastName', 'rate', 'areas'],
+  setup(props) {
+    const route = useRoute()
+
+    const fullName = computed(() => {
+      return props.firstName + ' ' + props.lastName
+    })
+    const coachContactLink = computed(() => {
+      return route.path + '/' + props.id + '/contact'
+    })
+    const coachDetailsLink = computed(() => {
+      return route.path + '/' + props.id
+    })
+
+    return { fullName, coachContactLink, coachDetailsLink }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

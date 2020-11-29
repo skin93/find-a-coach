@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="submitForm">
-    <div class="form-control" :class="{invalid: !firstName.isValid}">
+    <div class="form-control" :class="{ invalid: !firstName.isValid }">
       <label for="firstname">First Name</label>
       <input
         type="text"
@@ -10,7 +10,7 @@
       />
       <p v-if="!firstName.isValid">First Name must not be empty.</p>
     </div>
-    <div class="form-control" :class="{invalid: !lastName.isValid}">
+    <div class="form-control" :class="{ invalid: !lastName.isValid }">
       <label for="lastname">Last Name</label>
       <input
         type="text"
@@ -20,7 +20,7 @@
       />
       <p v-if="!lastName.isValid">Last Name must not be empty.</p>
     </div>
-    <div class="form-control" :class="{invalid: !description.isValid}">
+    <div class="form-control" :class="{ invalid: !description.isValid }">
       <label for="description">Description</label>
       <textarea
         id="textarea"
@@ -30,7 +30,7 @@
       ></textarea>
       <p v-if="!description.isValid">Description must not be empty.</p>
     </div>
-    <div class="form-control" :class="{invalid: !rate.isValid}">
+    <div class="form-control" :class="{ invalid: !rate.isValid }">
       <label for="rate">Hourly Rate</label>
       <input
         type="number"
@@ -40,7 +40,7 @@
       />
     </div>
     <p v-if="!rate.isValid">Rate must be greater than 0.</p>
-    <div class="form-control" :class="{invalid: !areas.isValid}">
+    <div class="form-control" :class="{ invalid: !areas.isValid }">
       <h3>Areas of Experties</h3>
       <div>
         <input
@@ -80,78 +80,94 @@
 </template>
 
 <script>
+import { ref, reactive } from 'vue'
 export default {
-  emits: ["save-data"],
-  data() {
-    return {
-      firstName: {
-        val: "",
-        isValid: true,
-      },
-      lastName: {
-        val: "",
-        isValid: true,
-      },
-      description: {
-        val: "",
-        isValid: true,
-      },
-      rate: {
-        val: null,
-        isValid: true,
-      },
-      areas: {
-        val: [],
-        isValid: true,
-      },
-      formIsValid: true,
-    };
-  },
-  methods: {
-    clearValidity(input) {
-      this[input].isValid = true;
-    },
-    validateForm() {
-      this.formIsValid = true;
-      if (this.firstName.val === "") {
-        this.firstName.isValid = false;
-        this.formIsValid = false;
-      }
-      if (this.lastName.val === "") {
-        this.lastName.isValid = false;
-        this.formIsValid = false;
-      }
-      if (this.description.val === "") {
-        this.description.isValid = false;
-        this.formIsValid = false;
-      }
-      if (!this.rate.val || this.rate.val < 0) {
-        this.rate.isValid = false;
-        this.formIsValid = false;
-      }
-      if (this.areas.val.length === 0) {
-        this.areas.isValid = false;
-        this.formIsValid = false;
-      }
-    },
-    submitForm() {
-      this.validateForm();
+  emits: ['save-data'],
+  setup(_, context) {
+    const firstName = reactive({
+      val: '',
+      isValid: true
+    })
 
-      if (!this.formIsValid) {
-        return;
+    const lastName = reactive({
+      val: '',
+      isValid: true
+    })
+
+    const description = reactive({
+      val: '',
+      isValid: true
+    })
+
+    const rate = reactive({
+      val: null,
+      isValid: true
+    })
+
+    const areas = reactive({
+      val: [],
+      isValid: true
+    })
+
+    const formIsValid = ref(true)
+
+    function clearValidity(input) {
+      context[input].isValid = true
+    }
+
+    const validateForm = () => {
+      formIsValid.value = true
+      if (firstName.val === '') {
+        firstName.isValid = false
+        formIsValid.value = false
+      }
+      if (lastName.val === '') {
+        lastName.isValid = false
+        formIsValid.value = false
+      }
+      if (description.val === '') {
+        description.isValid = false
+        formIsValid.value = false
+      }
+      if (!rate.val || rate.val < 0) {
+        rate.isValid = false
+        formIsValid.value = false
+      }
+      if (areas.val.length === 0) {
+        areas.isValid = false
+        formIsValid.value = false
+      }
+    }
+
+    const submitForm = () => {
+      validateForm()
+
+      if (!formIsValid.value) {
+        return
       }
 
       const formData = {
-        first: this.firstName.val,
-        last: this.lastName.val,
-        desc: this.description.val,
-        rate: this.rate.val,
-        areas: this.areas.val,
-      };
-      this.$emit("save-data", formData);
-    },
-  },
-};
+        first: firstName.val,
+        last: lastName.val,
+        desc: description.val,
+        rate: rate.val,
+        areas: areas.val
+      }
+      context.emit('save-data', formData)
+    }
+
+    return {
+      firstName,
+      lastName,
+      description,
+      rate,
+      areas,
+      formIsValid,
+      clearValidity,
+      submitForm
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -165,7 +181,7 @@ label {
   margin-bottom: 0.5rem;
 }
 
-input[type="checkbox"] + label {
+input[type='checkbox'] + label {
   font-weight: normal;
   display: inline;
   margin: 0 0 0 0.5rem;
@@ -185,7 +201,7 @@ textarea {
   }
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   display: inline;
   width: auto;
   border: none;

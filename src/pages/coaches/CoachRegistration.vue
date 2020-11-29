@@ -10,16 +10,22 @@
 </template>
 
 <script>
-import CoachForm from "../../components/coaches/CoachForm.vue";
+import CoachForm from '../../components/coaches/CoachForm.vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 export default {
   components: {
-    CoachForm,
+    CoachForm
   },
-  methods: {
-    saveData(data) {
-      this.$store.dispatch("coaches/registerCoach", data);
-      this.$router.replace("/coaches");
-    },
-  },
-};
+  setup() {
+    const store = useStore()
+    const router = useRouter()
+    const saveData = (data) => {
+      store.dispatch('coaches/registerCoach', data)
+      router.replace('/coaches')
+    }
+
+    return { saveData }
+  }
+}
 </script>

@@ -8,37 +8,44 @@
 </template>
 
 <script>
-import TheHeader from "./components/layout/TheHeader";
+import { useStore } from 'vuex'
+import { computed, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import TheHeader from './components/layout/TheHeader'
 export default {
   components: {
-    TheHeader,
+    TheHeader
   },
-  created() {
-    this.$store.dispatch("autoLogin");
-  },
-  computed: {
-    didAutoLoogut() {
-      return this.$store.getters.didAutoLoogut;
-    },
-  },
-  watch: {
-    didAutoLoogut(curValue, oldValue) {
+
+  setup() {
+    const router = useRouter()
+    const store = useStore()
+
+    store.dispatch('autoLogin')
+
+    const didAutoLogout = computed(function() {
+      return store.getters.didAutoLogout
+    })
+
+    watch(didAutoLogout, function(curValue, oldValue) {
       if (curValue && curValue !== oldValue) {
-        this.$router.replace("/coaches");
+        router.replace('/coaches')
       }
-    },
-  },
-};
+    })
+
+    return { didAutoLogout }
+  }
+}
 </script>
 
 <style>
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 * {
   box-sizing: border-box;
 }
 
 html {
-  font-family: "Roboto", "san-serif";
+  font-family: 'Roboto', 'san-serif';
 }
 
 body {

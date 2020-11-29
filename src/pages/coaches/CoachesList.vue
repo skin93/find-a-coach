@@ -43,73 +43,88 @@
 </template>
 
 <script>
-import CoachItem from "../../components/coaches/CoachItem";
-import CoachFilter from "../../components/coaches/CoachFilter";
+import CoachItem from '../../components/coaches/CoachItem'
+import CoachFilter from '../../components/coaches/CoachFilter'
+import { ref, reactive, computed } from 'vue'
+import { useStore } from 'vuex'
 export default {
   components: {
     CoachItem,
-    CoachFilter,
+    CoachFilter
   },
-  data() {
-    return {
-      isLoading: false,
-      error: null,
-      activeFilters: {
-        frontend: true,
-        backend: true,
-        career: true,
-      },
-    };
-  },
-  created() {
-    this.loadCoaches();
-  },
-  methods: {
-    setFilters(updatedFilters) {
-      this.activeFilters = updatedFilters;
-    },
-    async loadCoaches(refresh = false) {
-      this.isLoading = true;
+  setup() {
+    const store = useStore()
+
+    const isLoading = ref(false)
+    const error = ref(null)
+    const activeFilters = reactive({
+      frontend: true,
+      backend: true,
+      career: true
+    })
+
+    const setFilters = (updatedFilters) => {
+      activeFilters.frontend = updatedFilters.frontend
+      activeFilters.backend = updatedFilters.backend
+      activeFilters.career = updatedFilters.career
+    }
+
+    const loadCoaches = async (refresh = false) => {
+      isLoading.value = true
       try {
-        await this.$store.dispatch("coaches/loadCoaches", {
-          forceRefresh: refresh,
-        });
-      } catch (error) {
-        this.error = error.message || "Something went worng!";
+        await store.dispatch('coaches/loadCoaches', {
+          forceRefresh: refresh
+        })
+      } catch (err) {
+        error.value = err.message || 'Something went worng!'
       }
-      this.isLoading = false;
-    },
-    handleError() {
-      this.error = null;
-    },
-  },
-  computed: {
-    isLoggedIn() {
-      return this.$store.getters.isAuthenticated;
-    },
-    isCoach() {
-      return this.$store.getters["coaches/isCoach"];
-    },
-    filteredCoaches() {
-      const coaches = this.$store.getters["coaches/coaches"];
+      isLoading.value = false
+    }
+    const handleError = () => {
+      error.value = null
+    }
+
+    const isLoggedIn = computed(() => {
+      return store.getters.isAuthenticated
+    })
+    const isCoach = computed(() => {
+      return store.getters['coaches/isCoach']
+    })
+    const filteredCoaches = computed(() => {
+      const coaches = store.getters['coaches/coaches']
       return coaches.filter((coach) => {
-        if (this.activeFilters.frontend && coach.areas.includes("frontend")) {
-          return true;
+        if (activeFilters.frontend && coach.areas.includes('frontend')) {
+          return true
         }
-        if (this.activeFilters.backend && coach.areas.includes("backend")) {
-          return true;
+        if (activeFilters.backend && coach.areas.includes('backend')) {
+          return true
         }
-        if (this.activeFilters.career && coach.areas.includes("career")) {
-          return true;
+        if (activeFilters.career && coach.areas.includes('career')) {
+          return true
         }
-        return false;
-      });
-    },
-    hasCoaches() {
-      return !this.isLoading && this.$store.getters["coaches/hasCoaches"];
-    },
-  },
-};
+        return false
+      })
+    })
+
+    const hasCoaches = computed(() => {
+      return !isLoading.value && store.getters['coaches/hasCoaches']
+    })
+
+    loadCoaches()
+
+    return {
+      isLoading,
+      error,
+      activeFilters,
+      setFilters,
+      handleError,
+      isLoggedIn,
+      isCoach,
+      filteredCoaches,
+      hasCoaches
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

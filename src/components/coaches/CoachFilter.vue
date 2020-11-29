@@ -17,30 +17,34 @@
 </template>
 
 <script>
+import { reactive } from 'vue'
 export default {
-  emits: ["change-filter"],
-  data() {
-    return {
-      filters: {
-        frontend: true,
-        backend: true,
-        career: true,
-      },
-    };
-  },
-  methods: {
-    setFilter(event) {
-      const inputId = event.target.id;
-      const isActive = event.target.checked;
+  emits: ['change-filter'],
+  setup(_, context) {
+    const filters = reactive({
+      frontend: true,
+      backend: true,
+      career: true
+    })
+
+    function setFilter(event) {
+      const inputId = event.target.id
+      const isActive = event.target.checked
       const updatedFilters = {
-        ...this.filters,
-        [inputId]: isActive,
-      };
-      this.filters = updatedFilters;
-      this.$emit("change-filter", updatedFilters);
-    },
-  },
-};
+        ...filters,
+        [inputId]: isActive
+      }
+
+      filters.frontend = updatedFilters.frontend
+      filters.backend = updatedFilters.backend
+      filters.career = updatedFilters.career
+
+      context.emit('change-filter', updatedFilters)
+    }
+
+    return { filters, setFilter }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

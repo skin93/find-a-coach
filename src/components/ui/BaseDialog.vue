@@ -26,28 +26,30 @@ export default {
   props: {
     show: {
       type: Boolean,
-      required: true,
+      required: true
     },
     title: {
       type: String,
-      required: false,
+      required: false
     },
     fixed: {
       type: Boolean,
       required: false,
-      default: false,
-    },
+      default: false
+    }
   },
-  emits: ["close"],
-  methods: {
-    tryClose() {
-      if (this.fixed) {
-        return;
+  emits: ['close'],
+  setup(props, context) {
+    const tryClose = () => {
+      if (props.fixed) {
+        return
       }
-      this.$emit("close");
-    },
-  },
-};
+      context.emit('close')
+    }
+
+    return { tryClose }
+  }
+}
 </script>
 
 <style scoped>

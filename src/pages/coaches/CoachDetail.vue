@@ -33,36 +33,37 @@
 </template>
 
 <script>
+import { ref, computed } from 'vue'
+import { useStore } from 'vuex'
 export default {
-  props: ["id"],
-  data() {
-    return {
-      selectedCoach: null,
-    };
-  },
-  computed: {
-    fullName() {
-      return this.selectedCoach.firstName + " " + this.selectedCoach.lastName;
-    },
-    contactLink() {
-      return this.$store.path + "/" + this.id + "/contact";
-    },
-    areas() {
-      return this.selectedCoach.areas;
-    },
-    rate() {
-      return this.selectedCoach.hourlyRate;
-    },
-    description() {
-      return this.selectedCoach.description;
-    },
-  },
-  created() {
-    this.selectedCoach = this.$store.getters["coaches/coaches"].find(
-      (coach) => coach.id === this.id
-    );
-  },
-};
+  props: ['id'],
+  setup(props) {
+    const store = useStore()
+    const selectedCoach = ref(null)
+
+    selectedCoach.value = store.getters['coaches/coaches'].find(
+      (coach) => coach.id === props.id
+    )
+
+    const fullName = computed(() => {
+      return selectedCoach.value.firstName + ' ' + selectedCoach.value.lastName
+    })
+    const contactLink = computed(() => {
+      return store.path + '/' + props.id + '/contact'
+    })
+    const areas = computed(() => {
+      return selectedCoach.value.areas
+    })
+    const rate = computed(() => {
+      return selectedCoach.value.hourlyRate
+    })
+    const description = computed(() => {
+      return selectedCoach.value.description
+    })
+
+    return { selectedCoach, fullName, contactLink, areas, rate, description }
+  }
+}
 </script>
 
 <style lang="scss" scoped></style>
